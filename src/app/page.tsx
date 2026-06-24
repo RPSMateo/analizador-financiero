@@ -1,4 +1,5 @@
 import Link from "next/link";
+import WaitlistForm from "@/components/WaitlistForm";
 
 export default function Home() {
   return (
@@ -166,11 +167,31 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-              <button className="w-full bg-white text-emerald-700 font-bold py-3 rounded-xl hover:bg-emerald-50 transition-colors">
-                Empezar prueba gratis →
-              </button>
-              <p className="text-xs text-emerald-300 mt-3 text-center">Cancelá cuando quieras</p>
+              <WaitlistForm
+                variante="claro"
+                origen="landing-precios"
+                textoBoton="Quiero acceso"
+              />
+              <p className="text-xs text-emerald-300 mt-3 text-center">
+                Estamos por lanzar — dejá tu email y sé de los primeros
+              </p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Lista de espera */}
+      <section className="bg-emerald-600 py-20">
+        <div className="max-w-2xl mx-auto px-6 text-center">
+          <h2 className="text-3xl font-bold text-white mb-3">
+            Sé de los primeros en usarlo
+          </h2>
+          <p className="text-emerald-100 mb-8">
+            Estamos abriendo el acceso de a poco. Dejá tu email y te avisamos apenas
+            puedas desbloquear los escenarios completos y armar tu plan de retiro.
+          </p>
+          <div className="max-w-md mx-auto">
+            <WaitlistForm variante="claro" origen="landing-cta" textoBoton="Anotarme" />
           </div>
         </div>
       </section>

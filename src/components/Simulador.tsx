@@ -11,6 +11,7 @@ import {
   Sexo,
   SituacionLaboral,
 } from "@/lib/calculator";
+import WaitlistForm from "@/components/WaitlistForm";
 
 const INPUTS_INICIALES: SimulatorInputs = {
   edadActual: 28,
@@ -280,11 +281,16 @@ export default function Simulador() {
                   </h3>
                   <p className="text-sm text-gray-500 mb-5">
                     Conservador, moderado y optimista con proyección año a año, exportación a PDF y más.
+                    Estamos por lanzar — dejá tu email y te damos acceso anticipado.
                   </p>
-                  <button className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3 rounded-xl transition-colors">
-                    Empezar prueba gratis de 7 días →
-                  </button>
-                  <p className="text-xs text-gray-400 mt-3">Después $4.990/mes · Cancelá cuando quieras</p>
+                  <div className="max-w-sm mx-auto">
+                    <WaitlistForm
+                      variante="oscuro"
+                      origen="simulador-bloqueo"
+                      situacion={resultado.inputs.situacion}
+                      textoBoton="Quiero acceso"
+                    />
+                  </div>
                 </div>
               </div>
             )}
