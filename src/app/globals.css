@@ -24,3 +24,33 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* ---------------------------------------------------------------------------
+   Impresión / exportación a PDF
+   Al imprimir mostramos únicamente el informe (.plan-report) y ocultamos el
+   resto de la app. Usamos el truco de visibility para no tener que envolver
+   toda la página: el resto queda invisible y el informe se posiciona arriba.
+   --------------------------------------------------------------------------- */
+@media print {
+  /* El informe se monta como hijo directo de <body> (portal). Ocultamos todo
+     lo demás para que no queden páginas en blanco con el contenido de la app. */
+  body > *:not(.plan-report) {
+    display: none !important;
+  }
+
+  .plan-report {
+    display: block !important;
+    /* Forzar que se impriman los fondos de color (emerald, etc.) */
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .plan-report-seccion {
+    break-inside: avoid;
+  }
+
+  @page {
+    size: A4;
+    margin: 14mm;
+  }
+}
