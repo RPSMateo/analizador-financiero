@@ -52,11 +52,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: true, alreadyRegistered: true });
     }
     console.error("[waitlist] Error al insertar:", error);
-    // Diagnóstico temporal: exponemos el detalle del error para depurar la conexión.
     return NextResponse.json(
-      {
-        error: `Error Supabase [${error.code ?? "?"}]: ${error.message ?? "sin mensaje"}${error.hint ? ` — ${error.hint}` : ""}`,
-      },
+      { error: "No pudimos guardar tu email. Probá de nuevo en un momento." },
       { status: 500 }
     );
   }
