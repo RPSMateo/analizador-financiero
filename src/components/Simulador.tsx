@@ -3,19 +3,22 @@
 import { useState } from "react";
 import {
   calcularSimulacion,
+  edadJubilacionLegal,
   formatearPesos,
   formatearPorcentaje,
   SimulatorInputs,
   ResultadoSimulacion,
-  Escenario,
+  Sexo,
+  SituacionLaboral,
 } from "@/lib/calculator";
 
 const INPUTS_INICIALES: SimulatorInputs = {
   edadActual: 28,
   edadRetiro: 65,
-  ingresoMensual: 500000,
+  ingresoMensual: 800000,
   ahorroActual: 0,
-  categoriaMonotributo: "monotributista",
+  sexo: "hombre",
+  situacion: "monotributista",
 };
 
 export default function Simulador() {
@@ -24,10 +27,14 @@ export default function Simulador() {
   const [escenarioActivo, setEscenarioActivo] = useState<"conservador" | "moderado" | "optimista">("moderado");
   const [mostrarBloqueo, setMostrarBloqueo] = useState(false);
 
+  function actualizarSexo(sexo: Sexo) {
+    // Al cambiar el sexo ajustamos la edad de retiro sugerida a la legal.
+    setInputs({ ...inputs, sexo, edadRetiro: edadJubilacionLegal(sexo) });
+  }
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const res = calcularSimulacion(inputs);
-    setResultado(res);
+    setResultado(calcularSimulacion(inputs));
     setMostrarBloqueo(false);
   }
 
@@ -41,33 +48,25 @@ export default function Simulador() {
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="grid grid-cols-2 gap-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Edad actual
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Edad actual</label>
               <input
                 type="number"
                 min={18}
                 max={64}
                 value={inputs.edadActual}
-                onChange={(e) =>
-                  setInputs({ ...inputs, edadActual: Number(e.target.value) })
-                }
+                onChange={(e) => setInputs({ ...inputs, edadActual: Number(e.target.value) })}
                 className="w-full border border-gray-200 rounded-xl px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Edad de retiro deseada
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Edad de retiro</label>
               <input
                 type="number"
                 min={inputs.edadActual + 1}
-                max={85}
+                max={75}
                 value={inputs.edadRetiro}
-                onChange={(e) =>
-                  setInputs({ ...inputs, edadRetiro: Number(e.target.value) })
-                }
+                onChange={(e) => setInputs({ ...inputs, edadRetiro: Number(e.target.value) })}
                 className="w-full border border-gray-200 rounded-xl px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 required
               />
@@ -75,50 +74,63 @@ export default function Simulador() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Ingreso mensual neto (ARS)
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Sexo</label>
+            <div className="grid grid-cols-2 gap-3">
+              {(["hombre", "mujer"] as const).map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => actualizarSexo(s)}
+                  className={`py-3 rounded-xl border text-sm font-medium capitalize transition-colors ${
+                    inputs.sexo === s
+                      ? "border-emerald-500 bg-emerald-50 text-emerald-700"
+                      : "border-gray-200 text-gray-500 hover:border-gray-300"
+                  }`}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+            <p className="text-xs text-gray-400 mt-1">
+              Determina la edad jubilatoria legal ({inputs.sexo === "mujer" ? "60" : "65"} años) y la
+              esperanza de vida usada en el cálculo.
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Ingreso mensual neto (ARS)</label>
             <input
               type="number"
               min={0}
+              step={10000}
               value={inputs.ingresoMensual}
-              onChange={(e) =>
-                setInputs({ ...inputs, ingresoMensual: Number(e.target.value) })
-              }
+              onChange={(e) => setInputs({ ...inputs, ingresoMensual: Number(e.target.value) })}
               className="w-full border border-gray-200 rounded-xl px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
               required
             />
-            <p className="text-xs text-gray-400 mt-1">Lo que ingresa en promedio por mes</p>
+            <p className="text-xs text-gray-400 mt-1">Lo que ingresás en promedio por mes, a valores de hoy</p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Ahorros actuales (ARS)
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Ahorros / inversiones actuales (ARS)</label>
             <input
               type="number"
               min={0}
+              step={10000}
               value={inputs.ahorroActual}
-              onChange={(e) =>
-                setInputs({ ...inputs, ahorroActual: Number(e.target.value) })
-              }
+              onChange={(e) => setInputs({ ...inputs, ahorroActual: Number(e.target.value) })}
               className="w-full border border-gray-200 rounded-xl px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
               required
             />
-            <p className="text-xs text-gray-400 mt-1">Incluí todos tus ahorros e inversiones actuales</p>
+            <p className="text-xs text-gray-400 mt-1">Incluí todo tu capital ya invertido para el retiro</p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Tu situación laboral
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Tu situación laboral</label>
             <select
-              value={inputs.categoriaMonotributo}
+              value={inputs.situacion}
               onChange={(e) =>
-                setInputs({
-                  ...inputs,
-                  categoriaMonotributo: e.target.value as SimulatorInputs["categoriaMonotributo"],
-                })
+                setInputs({ ...inputs, situacion: e.target.value as SituacionLaboral })
               }
               className="w-full border border-gray-200 rounded-xl px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white"
             >
@@ -150,12 +162,39 @@ export default function Simulador() {
               <span className="text-lg font-normal text-emerald-700"> / mes</span>
             </p>
             <p className="text-sm text-emerald-600 mt-2">
-              Capital total necesario: {formatearPesos(resultado.escenarios.moderado.capitalNecesario)}
+              en pesos de hoy · escenario moderado ({formatearPorcentaje(resultado.escenarios.moderado.retornoRealAnual)} real anual)
             </p>
-            <p className="text-xs text-emerald-500 mt-1">
-              Escenario moderado · El Estado aportaría aprox. {formatearPesos(resultado.escenarios.moderado.aporteEstadoMensual)}/mes ({formatearPorcentaje(resultado.tasaReemplazoPrevisionArgentina)} de tu ingreso)
-            </p>
+
+            <div className="mt-5 pt-5 border-t border-emerald-100 grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <p className="text-emerald-600">El Estado te daría aprox.</p>
+                <p className="font-bold text-emerald-900">
+                  {formatearPesos(resultado.jubilacionEstatalMensual)}/mes
+                </p>
+                <p className="text-xs text-emerald-500">
+                  {formatearPorcentaje(resultado.tasaReemplazoEstatal)} de tu ingreso actual
+                </p>
+              </div>
+              <div>
+                <p className="text-emerald-600">Brecha a cubrir vos</p>
+                <p className="font-bold text-emerald-900">
+                  {formatearPesos(resultado.brechaMensual)}/mes
+                </p>
+                <p className="text-xs text-emerald-500">
+                  objetivo: 70% de tu ingreso ({formatearPesos(resultado.ingresoObjetivoRetiro)})
+                </p>
+              </div>
+            </div>
           </div>
+
+          {/* Advertencia 30 años de aportes */}
+          {!resultado.cumpleAniosAportes && (
+            <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 text-sm text-amber-800">
+              ⚠️ <strong>Atención:</strong> con la edad de retiro elegida podrías no llegar a los 30 años
+              de aportes que exige la ley. Sin ellos, solo accederías a la PUAM (80% del haber mínimo).
+              Considéralo en tu planificación.
+            </div>
+          )}
 
           {/* Selector de escenarios (tier pago — bloqueado) */}
           <div className="relative">
@@ -187,37 +226,41 @@ export default function Simulador() {
                       highlight
                     />
                     <MetricCard
-                      label="Capital a acumular"
+                      label="Capital a acumular (hoy)"
                       value={formatearPesos(escenario.capitalNecesario)}
                     />
                     <MetricCard
-                      label="Retorno real anual estimado"
-                      value={formatearPorcentaje(escenario.tasaRetornoReal)}
+                      label="Retorno real anual"
+                      value={formatearPorcentaje(escenario.retornoRealAnual)}
                     />
                     <MetricCard
-                      label="Jubilación estatal estimada"
-                      value={formatearPesos(escenario.aporteEstadoMensual) + "/mes"}
+                      label="Años de retiro cubiertos"
+                      value={`${resultado.aniosEnRetiro} años (hasta ${resultado.expectativaVida})`}
                     />
                   </div>
 
-                  {/* Mini gráfico de barras */}
+                  {/* Mini gráfico de barras: avance hacia la meta */}
                   <div className="mt-4">
-                    <p className="text-xs font-medium text-gray-500 mb-3">Proyección de ahorros vs. meta</p>
+                    <p className="text-xs font-medium text-gray-500 mb-3">
+                      Avance del capital acumulado hacia la meta
+                    </p>
                     <div className="space-y-1.5">
-                      {escenario.proyeccionAhorros
-                        .filter((_, i) => i % Math.ceil(escenario.proyeccionAhorros.length / 6) === 0)
+                      {escenario.proyeccion
+                        .filter((_, i) => i % Math.max(1, Math.ceil(escenario.proyeccion.length / 6)) === 0)
                         .map((punto) => {
-                          const pct = Math.min(100, (punto.ahorroAcumulado / punto.metaAcumulada) * 100);
+                          const pct = escenario.capitalNecesario > 0
+                            ? Math.min(100, (punto.ahorroAcumulado / escenario.capitalNecesario) * 100)
+                            : 0;
                           return (
                             <div key={punto.edad} className="flex items-center gap-3">
-                              <span className="text-xs text-gray-400 w-12">Edad {punto.edad}</span>
+                              <span className="text-xs text-gray-400 w-14">Edad {punto.edad}</span>
                               <div className="flex-1 bg-gray-100 rounded-full h-2">
                                 <div
                                   className="bg-emerald-500 h-2 rounded-full transition-all"
                                   style={{ width: `${pct}%` }}
                                 />
                               </div>
-                              <span className="text-xs text-gray-500 w-8">{Math.round(pct)}%</span>
+                              <span className="text-xs text-gray-500 w-9 text-right">{Math.round(pct)}%</span>
                             </div>
                           );
                         })}
@@ -236,7 +279,7 @@ export default function Simulador() {
                     Desbloqueá los 3 escenarios completos
                   </h3>
                   <p className="text-sm text-gray-500 mb-5">
-                    Conservador, moderado y optimista con proyecciones año a año, exportación a PDF y más.
+                    Conservador, moderado y optimista con proyección año a año, exportación a PDF y más.
                   </p>
                   <button className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3 rounded-xl transition-colors">
                     Empezar prueba gratis de 7 días →
@@ -246,7 +289,6 @@ export default function Simulador() {
               </div>
             )}
 
-            {/* Botón para mostrar bloqueo (simulación de CTA) */}
             {!mostrarBloqueo && (
               <button
                 onClick={() => setMostrarBloqueo(true)}
@@ -256,6 +298,13 @@ export default function Simulador() {
               </button>
             )}
           </div>
+
+          {/* Nota metodológica */}
+          <p className="text-xs text-gray-400 leading-relaxed">
+            Todos los montos están expresados en pesos de hoy (poder adquisitivo constante). Los cálculos
+            usan tasas de retorno reales (por encima de la inflación) y parámetros del sistema previsional
+            argentino a junio 2026. Son estimaciones y no constituyen asesoramiento financiero.
+          </p>
         </div>
       )}
     </div>

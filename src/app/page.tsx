@@ -55,7 +55,7 @@ export default function Home() {
                 icon: "📉",
                 titulo: "La jubilación estatal no alcanza",
                 texto:
-                  "Un monotributista recibe en promedio el 30% de su último ingreso. Si ganás $500.000/mes, el Estado te dará unos $150.000.",
+                  "La mayoría de los monotributistas cobra el haber mínimo (hoy ~$403.000), gane lo que gane. Si facturás $2.000.000/mes, el Estado te cubre apenas el 20%.",
               },
               {
                 icon: "💸",
