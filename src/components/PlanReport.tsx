@@ -8,6 +8,7 @@ import {
   SituacionLaboral,
   Sexo,
 } from "@/lib/calculator";
+import GrowthChart from "@/components/GrowthChart";
 
 /**
  * Informe imprimible del plan de retiro.
@@ -197,6 +198,9 @@ export default function PlanReport({ resultado }: { resultado: ResultadoSimulaci
         <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wide mb-3">
           Proyección de tu capital — escenario moderado
         </h2>
+        <div className="mb-4">
+          <GrowthChart proyeccion={moderado.proyeccion} />
+        </div>
         <table className="w-full border-collapse text-xs">
           <thead>
             <tr className="bg-gray-100 text-gray-600 text-left">

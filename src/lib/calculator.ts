@@ -298,6 +298,21 @@ export function formatearPesos(valor: number): string {
   }).format(valor);
 }
 
+/**
+ * Versión compacta para ejes de gráficos: $12,3 M, $850 mil, $4.990.
+ * Mantiene el signo $ y abrevia millones y miles.
+ */
+export function formatearPesosCompacto(valor: number): string {
+  const abs = Math.abs(valor);
+  if (abs >= 1_000_000) {
+    return `$${(valor / 1_000_000).toLocaleString("es-AR", { maximumFractionDigits: 1 })} M`;
+  }
+  if (abs >= 1_000) {
+    return `$${Math.round(valor / 1_000)} mil`;
+  }
+  return `$${Math.round(valor)}`;
+}
+
 export function formatearPorcentaje(valor: number): string {
   return `${(valor * 100).toFixed(1)}%`;
 }
