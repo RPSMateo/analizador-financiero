@@ -18,6 +18,9 @@ export const metadata: Metadata = {
   description:
     "Calculá cuánto necesitás ahorrar para jubilarte como autónomo o freelancer en Argentina. Con inflación real y 3 escenarios de inversión.",
   alternates: { canonical: "/" },
+  verification: {
+    google: "ZnBBOD48sBGl0eRDKYlLnqcUICq_sCFEuYgiskflDVU",
+  },
   openGraph: {
     title: "RetiroLibre — Simulador de jubilación para freelancers argentinos",
     description:
