@@ -244,23 +244,35 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-gray-100 py-12">
-        <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 text-sm">
+      <footer className="border-t border-gray-100 py-14">
+        <div className="max-w-5xl mx-auto px-6 grid sm:grid-cols-2 gap-10 text-sm">
           <div>
-            <p className="flex items-center gap-2 font-semibold tracking-tight text-gray-950 mb-1">
+            <p className="flex items-center gap-2 font-semibold tracking-tight text-gray-950 mb-2">
               <span className="w-2 h-2 rounded-full bg-emerald-500" />
               RetiroLibre
             </p>
-            <p className="text-gray-400">
-              Los cálculos son estimativos y no constituyen asesoramiento financiero.
+            <p className="text-gray-400 max-w-xs leading-relaxed">
+              El simulador de jubilación para autónomos y freelancers argentinos. Los cálculos
+              son estimativos y no constituyen asesoramiento financiero.
             </p>
           </div>
-          <Link
-            href="/jubilacion-monotributista"
-            className="text-gray-500 hover:text-gray-950 transition-colors"
-          >
-            ¿Cuánto cobra de jubilación un monotributista en 2026? →
-          </Link>
+          <div>
+            <p className="font-medium text-gray-950 mb-3">Guías</p>
+            <ul className="space-y-2.5">
+              {[
+                { href: "/jubilacion-monotributista", t: "¿Cuánto cobra de jubilación un monotributista?" },
+                { href: "/jubilacion-autonomos", t: "Jubilación de autónomos: cuánto se cobra y requisitos" },
+                { href: "/cuanto-ahorrar-para-jubilarse", t: "¿Cuánto necesito ahorrar para jubilarme?" },
+                { href: "/como-invertir-para-la-jubilacion", t: "Cómo invertir para el retiro en Argentina" },
+              ].map((g) => (
+                <li key={g.href}>
+                  <Link href={g.href} className="text-gray-500 hover:text-gray-950 transition-colors">
+                    {g.t}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </footer>
     </main>
