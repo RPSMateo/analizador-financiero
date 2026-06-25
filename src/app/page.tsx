@@ -147,34 +147,33 @@ export default function Home() {
 
             <div className="bg-emerald-600 rounded-2xl p-8 text-white relative overflow-hidden">
               <div className="absolute top-4 right-4 bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-1 rounded-full">
-                7 días gratis
+                Pago único
               </div>
               <h3 className="font-bold text-xl mb-1">Pro</h3>
               <p className="text-emerald-200 text-sm mb-6">Para tomar decisiones reales</p>
-              <p className="text-3xl font-bold mb-6">
-                $4.990<span className="text-lg font-normal text-emerald-200">/mes</span>
+              <p className="text-3xl font-bold mb-1">
+                $9.990<span className="text-lg font-normal text-emerald-200"> una vez</span>
               </p>
+              <p className="text-emerald-200 text-xs mb-6">Sin suscripción · acceso para siempre</p>
               <ul className="space-y-3 text-sm text-emerald-100 mb-8">
                 {[
                   "Todo lo del plan gratuito",
                   "3 escenarios de inversión",
                   "Proyección año a año",
+                  "Plan de acción: en qué invertir",
                   "Exportar plan a PDF",
-                  "Actualización con inflación real",
                 ].map((f) => (
                   <li key={f} className="flex items-center gap-2">
                     <span className="text-yellow-300">✓</span> {f}
                   </li>
                 ))}
               </ul>
-              <WaitlistForm
-                variante="claro"
-                origen="landing-precios"
-                textoBoton="Quiero acceso"
-              />
-              <p className="text-xs text-emerald-300 mt-3 text-center">
-                Estamos por lanzar — dejá tu email y sé de los primeros
-              </p>
+              <Link
+                href="/simulador"
+                className="block text-center bg-white text-emerald-700 hover:bg-emerald-50 font-semibold py-3 rounded-xl transition-colors"
+              >
+                Desbloquear mi plan
+              </Link>
             </div>
           </div>
         </div>
