@@ -33,6 +33,9 @@ const INPUT_CLASS =
 
 export default function Simulador() {
   const [inputs, setInputs] = useState<SimulatorInputs>(INPUTS_INICIALES);
+  const [rawIngreso, setRawIngreso] = useState(String(INPUTS_INICIALES.ingresoMensual));
+  const [rawAhorro, setRawAhorro] = useState(String(INPUTS_INICIALES.ahorroActual));
+  const [inputError, setInputError] = useState<string | null>(null);
   const [resultado, setResultado] = useState<ResultadoSimulacion | null>(null);
   const [escenarioActivo, setEscenarioActivo] = useState<"conservador" | "moderado" | "optimista">("moderado");
   const [proDesbloqueado, setProDesbloqueado] = useState(false);
@@ -69,6 +72,11 @@ export default function Simulador() {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!inputs.ingresoMensual || inputs.ingresoMensual <= 0) {
+      setInputError("Ingresá tu ingreso mensual para calcular.");
+      return;
+    }
+    setInputError(null);
     setResultado(calcularSimulacion(inputs));
   }
 
@@ -158,12 +166,20 @@ export default function Simulador() {
               type="number"
               min={0}
               step={10000}
-              value={inputs.ingresoMensual}
-              onChange={(e) => setInputs({ ...inputs, ingresoMensual: Number(e.target.value) })}
-              className={INPUT_CLASS}
-              required
+              value={rawIngreso}
+              onChange={(e) => {
+                setRawIngreso(e.target.value);
+                const num = e.target.value === "" ? 0 : Number(e.target.value);
+                if (!isNaN(num)) setInputs((prev) => ({ ...prev, ingresoMensual: num }));
+              }}
+              onBlur={() => {
+                if (rawIngreso === "") setRawIngreso("0");
+              }}
+              className={INPUT_CLASS + (inputError ? " border-red-400 focus:border-red-400 focus:ring-red-400" : "")}
+              placeholder="Ej: 800000"
             />
-            <p className="text-xs text-gray-400 mt-1.5">Lo que ingresás en promedio por mes, a valores de hoy</p>
+            {inputError && <p className="text-xs text-red-500 mt-1.5">{inputError}</p>}
+            {!inputError && <p className="text-xs text-gray-400 mt-1.5">Lo que ingresás en promedio por mes, a valores de hoy</p>}
           </div>
 
           <div>
@@ -172,10 +188,17 @@ export default function Simulador() {
               type="number"
               min={0}
               step={10000}
-              value={inputs.ahorroActual}
-              onChange={(e) => setInputs({ ...inputs, ahorroActual: Number(e.target.value) })}
+              value={rawAhorro}
+              onChange={(e) => {
+                setRawAhorro(e.target.value);
+                const num = e.target.value === "" ? 0 : Number(e.target.value);
+                if (!isNaN(num)) setInputs((prev) => ({ ...prev, ahorroActual: num }));
+              }}
+              onBlur={() => {
+                if (rawAhorro === "") setRawAhorro("0");
+              }}
               className={INPUT_CLASS}
-              required
+              placeholder="0"
             />
             <p className="text-xs text-gray-400 mt-1.5">Incluí todo tu capital ya invertido para el retiro</p>
           </div>
