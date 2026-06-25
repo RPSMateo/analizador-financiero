@@ -50,7 +50,15 @@ export async function POST(request: NextRequest) {
   if (!res.ok) {
     const detail = await res.text();
     console.error("Mercado Pago error:", res.status, detail);
-    return Response.json({ error: "Error al crear preferencia de pago" }, { status: 502 });
+    // Devolvemos el mensaje de MP para poder diagnosticar (credenciales, back_urls, etc.)
+    let mensaje = "Error al crear el pago en Mercado Pago.";
+    try {
+      const json = JSON.parse(detail);
+      if (json.message) mensaje = `Mercado Pago: ${json.message}`;
+    } catch {
+      /* detail no era JSON */
+    }
+    return Response.json({ error: mensaje }, { status: 502 });
   }
 
   const data = await res.json();

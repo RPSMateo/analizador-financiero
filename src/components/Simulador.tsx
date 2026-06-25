@@ -80,7 +80,7 @@ export default function Simulador() {
       if (data.init_point) {
         window.location.href = data.init_point;
       } else {
-        alert("No se pudo iniciar el pago. Intentá de nuevo.");
+        alert(data.error ?? "No se pudo iniciar el pago. Intentá de nuevo.");
       }
     } catch {
       alert("Error de red. Intentá de nuevo.");
