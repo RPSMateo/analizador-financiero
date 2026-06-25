@@ -12,6 +12,7 @@ import {
   SituacionLaboral,
 } from "@/lib/calculator";
 import WaitlistForm from "@/components/WaitlistForm";
+import PlanReport from "@/components/PlanReport";
 
 const INPUTS_INICIALES: SimulatorInputs = {
   edadActual: 28,
@@ -37,6 +38,13 @@ export default function Simulador() {
     e.preventDefault();
     setResultado(calcularSimulacion(inputs));
     setMostrarBloqueo(false);
+  }
+
+  function descargarPDF() {
+    // Abre el diálogo de impresión del navegador. El informe (PlanReport) está
+    // oculto en pantalla y solo se vuelve visible al imprimir (ver globals.css),
+    // así el usuario obtiene el plan completo con "Guardar como PDF".
+    window.print();
   }
 
   const escenario = resultado?.escenarios[escenarioActivo];
@@ -188,6 +196,17 @@ export default function Simulador() {
             </div>
           </div>
 
+          {/* Descargar plan en PDF */}
+          <button
+            onClick={descargarPDF}
+            className="w-full flex items-center justify-center gap-2 border border-emerald-600 text-emerald-700 hover:bg-emerald-50 font-semibold py-3 rounded-xl transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16" />
+            </svg>
+            Descargar mi plan en PDF
+          </button>
+
           {/* Advertencia 30 años de aportes */}
           {!resultado.cumpleAniosAportes && (
             <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 text-sm text-amber-800">
@@ -311,6 +330,9 @@ export default function Simulador() {
             usan tasas de retorno reales (por encima de la inflación) y parámetros del sistema previsional
             argentino a junio 2026. Son estimaciones y no constituyen asesoramiento financiero.
           </p>
+
+          {/* Informe imprimible (oculto en pantalla, visible solo al imprimir) */}
+          <PlanReport resultado={resultado} />
         </div>
       )}
     </div>
