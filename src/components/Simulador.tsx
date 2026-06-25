@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   calcularSimulacion,
   edadJubilacionLegal,
@@ -11,11 +11,12 @@ import {
   Sexo,
   SituacionLaboral,
 } from "@/lib/calculator";
-import WaitlistForm from "@/components/WaitlistForm";
 import PlanReport from "@/components/PlanReport";
 import GrowthChart from "@/components/GrowthChart";
 import ComparacionEscenarios from "@/components/ComparacionEscenarios";
 import PlanAccion from "@/components/PlanAccion";
+
+const LS_KEY = "retirolibre_pro_v1";
 
 const INPUTS_INICIALES: SimulatorInputs = {
   edadActual: 28,
@@ -30,24 +31,62 @@ export default function Simulador() {
   const [inputs, setInputs] = useState<SimulatorInputs>(INPUTS_INICIALES);
   const [resultado, setResultado] = useState<ResultadoSimulacion | null>(null);
   const [escenarioActivo, setEscenarioActivo] = useState<"conservador" | "moderado" | "optimista">("moderado");
-  const [mostrarBloqueo, setMostrarBloqueo] = useState(false);
+  const [proDesbloqueado, setProDesbloqueado] = useState(false);
+  const [pagoCargando, setPagoCargando] = useState(false);
+  const [pagoMensaje, setPagoMensaje] = useState<"ok" | "error" | "pendiente" | null>(null);
+
+  useEffect(() => {
+    // Verificar si ya pagó en una sesión anterior
+    if (localStorage.getItem(LS_KEY) === "true") {
+      setProDesbloqueado(true);
+    }
+
+    // Detectar retorno desde Mercado Pago
+    const params = new URLSearchParams(window.location.search);
+    const pago = params.get("pago");
+    if (pago === "ok") {
+      localStorage.setItem(LS_KEY, "true");
+      setProDesbloqueado(true);
+      setPagoMensaje("ok");
+      // Limpiar la URL sin recargar la página
+      window.history.replaceState(null, "", window.location.pathname);
+    } else if (pago === "error") {
+      setPagoMensaje("error");
+      window.history.replaceState(null, "", window.location.pathname);
+    } else if (pago === "pendiente") {
+      setPagoMensaje("pendiente");
+      window.history.replaceState(null, "", window.location.pathname);
+    }
+  }, []);
 
   function actualizarSexo(sexo: Sexo) {
-    // Al cambiar el sexo ajustamos la edad de retiro sugerida a la legal.
     setInputs({ ...inputs, sexo, edadRetiro: edadJubilacionLegal(sexo) });
   }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setResultado(calcularSimulacion(inputs));
-    setMostrarBloqueo(false);
   }
 
   function descargarPDF() {
-    // Abre el diálogo de impresión del navegador. El informe (PlanReport) está
-    // oculto en pantalla y solo se vuelve visible al imprimir (ver globals.css),
-    // así el usuario obtiene el plan completo con "Guardar como PDF".
     window.print();
+  }
+
+  async function iniciarPago() {
+    setPagoCargando(true);
+    try {
+      const res = await fetch("/api/pago/crear", { method: "POST" });
+      const data = await res.json();
+      if (data.init_point) {
+        window.location.href = data.init_point;
+      } else {
+        alert("No se pudo iniciar el pago. Intentá de nuevo.");
+      }
+    } catch {
+      alert("Error de red. Intentá de nuevo.");
+    } finally {
+      setPagoCargando(false);
+    }
   }
 
   const escenario = resultado?.escenarios[escenarioActivo];
@@ -164,6 +203,27 @@ export default function Simulador() {
       {/* Resultados */}
       {resultado && escenario && (
         <div className="space-y-6">
+          {/* Banner de pago exitoso */}
+          {pagoMensaje === "ok" && (
+            <div className="bg-emerald-50 border border-emerald-300 rounded-2xl p-4 flex items-center gap-3">
+              <span className="text-2xl">🎉</span>
+              <div>
+                <p className="font-semibold text-emerald-800">¡Pago confirmado! Tu plan completo está desbloqueado.</p>
+                <p className="text-sm text-emerald-600">Ahora podés ver los 3 escenarios, el plan de acción y descargar el PDF.</p>
+              </div>
+            </div>
+          )}
+          {pagoMensaje === "pendiente" && (
+            <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-sm text-amber-800">
+              Tu pago está siendo procesado. Revisá tu email en unos minutos y recargá la página.
+            </div>
+          )}
+          {pagoMensaje === "error" && (
+            <div className="bg-red-50 border border-red-200 rounded-2xl p-4 text-sm text-red-800">
+              El pago no se completó. Podés intentarlo de nuevo cuando quieras.
+            </div>
+          )}
+
           {/* Resultado básico (tier gratuito) */}
           <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-8">
             <p className="text-sm font-medium text-emerald-700 mb-1">
@@ -199,17 +259,6 @@ export default function Simulador() {
             </div>
           </div>
 
-          {/* Descargar plan en PDF */}
-          <button
-            onClick={descargarPDF}
-            className="w-full flex items-center justify-center gap-2 border border-emerald-600 text-emerald-700 hover:bg-emerald-50 font-semibold py-3 rounded-xl transition-colors"
-          >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16" />
-            </svg>
-            Descargar mi plan en PDF
-          </button>
-
           {/* Advertencia 30 años de aportes */}
           {!resultado.cumpleAniosAportes && (
             <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 text-sm text-amber-800">
@@ -219,9 +268,10 @@ export default function Simulador() {
             </div>
           )}
 
-          {/* Selector de escenarios (tier pago — bloqueado) */}
-          <div className="relative">
-            <div className={mostrarBloqueo ? "blur-sm pointer-events-none select-none" : ""}>
+          {/* ─── Plan completo (Pro) ─── */}
+          {proDesbloqueado ? (
+            <>
+              {/* Selector de escenarios */}
               <div className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
                 <div className="flex border-b border-gray-100">
                   {(["conservador", "moderado", "optimista"] as const).map((e) => (
@@ -262,7 +312,6 @@ export default function Simulador() {
                     />
                   </div>
 
-                  {/* Gráfico de crecimiento del capital hacia la meta */}
                   <div className="mt-4">
                     <p className="text-xs font-medium text-gray-500 mb-2">
                       Crecimiento de tu capital hasta el retiro
@@ -270,7 +319,6 @@ export default function Simulador() {
                     <GrowthChart proyeccion={escenario.proyeccion} />
                   </div>
 
-                  {/* Comparación de los 3 escenarios */}
                   <div className="mt-6 pt-6 border-t border-gray-100">
                     <p className="text-xs font-medium text-gray-500 mb-3">
                       Cuánto necesitás ahorrar en cada escenario
@@ -282,7 +330,6 @@ export default function Simulador() {
                     />
                   </div>
 
-                  {/* Plan de acción: en qué invertir */}
                   <div className="mt-6 pt-6 border-t border-gray-100">
                     <p className="text-sm font-semibold text-gray-900 mb-1">
                       Tu plan de acción — en qué poner ese ahorro
@@ -298,41 +345,76 @@ export default function Simulador() {
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* Overlay de bloqueo */}
-            {mostrarBloqueo && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/80 rounded-2xl">
-                <div className="text-center px-8">
-                  <div className="text-3xl mb-3">🔒</div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    Desbloqueá los 3 escenarios completos
-                  </h3>
-                  <p className="text-sm text-gray-500 mb-5">
-                    Conservador, moderado y optimista con proyección año a año, exportación a PDF y más.
-                    Estamos por lanzar — dejá tu email y te damos acceso anticipado.
-                  </p>
-                  <div className="max-w-sm mx-auto">
-                    <WaitlistForm
-                      variante="oscuro"
-                      origen="simulador-bloqueo"
-                      situacion={resultado.inputs.situacion}
-                      textoBoton="Quiero acceso"
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {!mostrarBloqueo && (
+              {/* Descargar PDF */}
               <button
-                onClick={() => setMostrarBloqueo(true)}
-                className="mt-3 w-full text-center text-sm text-emerald-600 hover:text-emerald-700 font-medium"
+                onClick={descargarPDF}
+                className="w-full flex items-center justify-center gap-2 border border-emerald-600 text-emerald-700 hover:bg-emerald-50 font-semibold py-3 rounded-xl transition-colors"
               >
-                Ver qué incluye la versión completa →
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16" />
+                </svg>
+                Descargar mi plan en PDF
               </button>
-            )}
-          </div>
+            </>
+          ) : (
+            /* ─── Paywall ─── */
+            <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+              {/* Preview borrosa del contenido Pro */}
+              <div className="relative">
+                <div className="blur-sm pointer-events-none select-none p-6 space-y-4">
+                  <div className="flex gap-2">
+                    {["conservador", "moderado", "optimista"].map((e) => (
+                      <div key={e} className="flex-1 py-3 rounded-lg bg-gray-100 text-center text-sm text-gray-400 capitalize">{e}</div>
+                    ))}
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    {[...Array(4)].map((_, i) => (
+                      <div key={i} className="rounded-xl bg-gray-50 h-16" />
+                    ))}
+                  </div>
+                  <div className="rounded-xl bg-gray-50 h-32" />
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-white/80" />
+              </div>
+
+              {/* CTA de pago */}
+              <div className="px-8 pb-8 pt-2 text-center">
+                <div className="text-3xl mb-3">🔐</div>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">
+                  Desbloqueá tu plan completo
+                </h3>
+                <p className="text-sm text-gray-500 mb-5 max-w-sm mx-auto">
+                  Una sola vez, sin suscripción. Accedés a todo para siempre.
+                </p>
+
+                <ul className="text-left text-sm text-gray-600 space-y-2 mb-6 max-w-xs mx-auto">
+                  {[
+                    "3 escenarios con proyección año a año",
+                    "Comparación visual conservador vs. optimista",
+                    "Plan de acción: en qué instrumento invertir cada mes",
+                    "Informe PDF completo para guardar e imprimir",
+                  ].map((item) => (
+                    <li key={item} className="flex items-start gap-2">
+                      <span className="text-emerald-500 font-bold mt-0.5">✓</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+
+                <button
+                  onClick={iniciarPago}
+                  disabled={pagoCargando}
+                  className="w-full max-w-xs bg-emerald-600 hover:bg-emerald-700 disabled:opacity-60 text-white font-bold py-4 rounded-xl transition-colors text-base"
+                >
+                  {pagoCargando ? "Redirigiendo..." : "Desbloquear mi plan — $9.990 ARS"}
+                </button>
+                <p className="text-xs text-gray-400 mt-3">
+                  Pago seguro con Mercado Pago · tarjetas, débito o saldo MP
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Nota metodológica */}
           <p className="text-xs text-gray-400 leading-relaxed">
@@ -341,8 +423,8 @@ export default function Simulador() {
             argentino a junio 2026. Son estimaciones y no constituyen asesoramiento financiero.
           </p>
 
-          {/* Informe imprimible (oculto en pantalla, visible solo al imprimir) */}
-          <PlanReport resultado={resultado} />
+          {/* Informe imprimible — solo disponible en plan Pro */}
+          {proDesbloqueado && <PlanReport resultado={resultado} />}
         </div>
       )}
     </div>
