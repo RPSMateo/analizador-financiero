@@ -13,6 +13,7 @@ import {
 } from "@/lib/calculator";
 import WaitlistForm from "@/components/WaitlistForm";
 import PlanReport from "@/components/PlanReport";
+import GrowthChart from "@/components/GrowthChart";
 
 const INPUTS_INICIALES: SimulatorInputs = {
   edadActual: 28,
@@ -259,32 +260,12 @@ export default function Simulador() {
                     />
                   </div>
 
-                  {/* Mini gráfico de barras: avance hacia la meta */}
+                  {/* Gráfico de crecimiento del capital hacia la meta */}
                   <div className="mt-4">
-                    <p className="text-xs font-medium text-gray-500 mb-3">
-                      Avance del capital acumulado hacia la meta
+                    <p className="text-xs font-medium text-gray-500 mb-2">
+                      Crecimiento de tu capital hasta el retiro
                     </p>
-                    <div className="space-y-1.5">
-                      {escenario.proyeccion
-                        .filter((_, i) => i % Math.max(1, Math.ceil(escenario.proyeccion.length / 6)) === 0)
-                        .map((punto) => {
-                          const pct = escenario.capitalNecesario > 0
-                            ? Math.min(100, (punto.ahorroAcumulado / escenario.capitalNecesario) * 100)
-                            : 0;
-                          return (
-                            <div key={punto.edad} className="flex items-center gap-3">
-                              <span className="text-xs text-gray-400 w-14">Edad {punto.edad}</span>
-                              <div className="flex-1 bg-gray-100 rounded-full h-2">
-                                <div
-                                  className="bg-emerald-500 h-2 rounded-full transition-all"
-                                  style={{ width: `${pct}%` }}
-                                />
-                              </div>
-                              <span className="text-xs text-gray-500 w-9 text-right">{Math.round(pct)}%</span>
-                            </div>
-                          );
-                        })}
-                    </div>
+                    <GrowthChart proyeccion={escenario.proyeccion} />
                   </div>
                 </div>
               </div>
