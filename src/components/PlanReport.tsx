@@ -9,6 +9,7 @@ import {
   Sexo,
 } from "@/lib/calculator";
 import GrowthChart from "@/components/GrowthChart";
+import PlanAccion from "@/components/PlanAccion";
 
 /**
  * Informe imprimible del plan de retiro.
@@ -227,6 +228,17 @@ export default function PlanReport({ resultado }: { resultado: ResultadoSimulaci
             })}
           </tbody>
         </table>
+      </section>
+
+      {/* Plan de acción */}
+      <section className="plan-report-seccion mb-6">
+        <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wide mb-1">
+          Tu plan de acción — escenario moderado
+        </h2>
+        <p className="text-xs text-gray-500 mb-3">
+          Cómo repartir {formatearPesos(moderado.ahorroMensualNecesario)}/mes entre instrumentos.
+        </p>
+        <PlanAccion escenario="moderado" ahorroMensual={moderado.ahorroMensualNecesario} compacto />
       </section>
 
       {/* Interpretación */}

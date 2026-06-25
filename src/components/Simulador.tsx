@@ -14,6 +14,8 @@ import {
 import WaitlistForm from "@/components/WaitlistForm";
 import PlanReport from "@/components/PlanReport";
 import GrowthChart from "@/components/GrowthChart";
+import ComparacionEscenarios from "@/components/ComparacionEscenarios";
+import PlanAccion from "@/components/PlanAccion";
 
 const INPUTS_INICIALES: SimulatorInputs = {
   edadActual: 28,
@@ -266,6 +268,33 @@ export default function Simulador() {
                       Crecimiento de tu capital hasta el retiro
                     </p>
                     <GrowthChart proyeccion={escenario.proyeccion} />
+                  </div>
+
+                  {/* Comparación de los 3 escenarios */}
+                  <div className="mt-6 pt-6 border-t border-gray-100">
+                    <p className="text-xs font-medium text-gray-500 mb-3">
+                      Cuánto necesitás ahorrar en cada escenario
+                    </p>
+                    <ComparacionEscenarios
+                      conservador={resultado.escenarios.conservador}
+                      moderado={resultado.escenarios.moderado}
+                      optimista={resultado.escenarios.optimista}
+                    />
+                  </div>
+
+                  {/* Plan de acción: en qué invertir */}
+                  <div className="mt-6 pt-6 border-t border-gray-100">
+                    <p className="text-sm font-semibold text-gray-900 mb-1">
+                      Tu plan de acción — en qué poner ese ahorro
+                    </p>
+                    <p className="text-xs text-gray-500 mb-4">
+                      Cómo repartir {formatearPesos(escenario.ahorroMensualNecesario)}/mes según el
+                      perfil {escenario.nombre.toLowerCase()}.
+                    </p>
+                    <PlanAccion
+                      escenario={escenarioActivo}
+                      ahorroMensual={escenario.ahorroMensualNecesario}
+                    />
                   </div>
                 </div>
               </div>
