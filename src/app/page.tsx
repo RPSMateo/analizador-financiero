@@ -199,6 +199,11 @@ export default function Home() {
       {/* Footer */}
       <footer className="border-t border-gray-100 py-10 text-center text-sm text-gray-400">
         <p className="mb-1 font-medium text-gray-500">RetiroLibre</p>
+        <p className="mb-3">
+          <Link href="/jubilacion-monotributista" className="text-emerald-600 hover:text-emerald-700">
+            ¿Cuánto cobra de jubilación un monotributista en 2026?
+          </Link>
+        </p>
         <p>Los cálculos son estimativos y no constituyen asesoramiento financiero.</p>
       </footer>
     </main>
