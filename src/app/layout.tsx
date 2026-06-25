@@ -30,6 +30,12 @@ export const metadata: Metadata = {
     locale: "es_AR",
     type: "website",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "RetiroLibre — Simulador de jubilación para freelancers argentinos",
+    description:
+      "Calculá cuánto necesitás ahorrar para jubilarte como autónomo o freelancer en Argentina.",
+  },
 };
 
 export default function RootLayout({

@@ -31,6 +31,15 @@ export function articleMetadata({ titulo, descripcion, urlPath }: ArticleMeta): 
       siteName: "RetiroLibre",
       locale: "es_AR",
       type: "article",
+      // Definir openGraph propio resetea la imagen heredada del archivo
+      // opengraph-image.tsx, así que la referenciamos explícitamente.
+      images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: titulo,
+      description: descripcion,
+      images: ["/opengraph-image"],
     },
   };
 }
