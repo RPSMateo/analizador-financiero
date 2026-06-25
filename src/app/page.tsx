@@ -1,80 +1,106 @@
 import Link from "next/link";
-import WaitlistForm from "@/components/WaitlistForm";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-white text-gray-950">
       {/* Nav */}
-      <nav className="border-b border-gray-100 px-6 py-4 flex items-center justify-between max-w-6xl mx-auto">
-        <span className="font-bold text-emerald-700 text-lg">RetiroLibre</span>
-        <div className="flex items-center gap-6">
-          <Link href="#precios" className="text-sm text-gray-500 hover:text-gray-900">
-            Precios
-          </Link>
-          <Link
-            href="/simulador"
-            className="bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
-          >
-            Calcular gratis
-          </Link>
+      <nav className="sticky top-0 z-20 border-b border-gray-100 bg-white/80 backdrop-blur-md">
+        <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+          <span className="flex items-center gap-2 font-semibold tracking-tight text-gray-950">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+            RetiroLibre
+          </span>
+          <div className="flex items-center gap-1 sm:gap-2">
+            <Link
+              href="#precios"
+              className="hidden sm:inline-block text-sm text-gray-500 hover:text-gray-950 px-3 py-2 transition-colors"
+            >
+              Precios
+            </Link>
+            <Link
+              href="/jubilacion-monotributista"
+              className="hidden sm:inline-block text-sm text-gray-500 hover:text-gray-950 px-3 py-2 transition-colors"
+            >
+              Guía
+            </Link>
+            <Link
+              href="/simulador"
+              className="text-sm font-medium text-white bg-gray-950 hover:bg-gray-800 px-4 py-2 rounded-full transition-colors"
+            >
+              Calcular gratis
+            </Link>
+          </div>
         </div>
       </nav>
 
       {/* Hero */}
-      <section className="max-w-4xl mx-auto px-6 py-24 text-center">
-        <span className="inline-block bg-emerald-50 text-emerald-700 text-sm font-medium px-4 py-1.5 rounded-full mb-6">
+      <section className="max-w-3xl mx-auto px-6 pt-24 pb-20 sm:pt-32 sm:pb-28 text-center">
+        <span className="inline-flex items-center gap-2 border border-gray-200 text-gray-600 text-xs font-medium px-3 py-1.5 rounded-full mb-8">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
           Para autónomos y freelancers argentinos
         </span>
-        <h1 className="text-5xl font-bold text-gray-900 leading-tight mb-6">
-          Sabé exactamente cuánto necesitás
-          <br />
-          <span className="text-emerald-600">ahorrar para jubilarte</span>
+        <h1 className="text-4xl sm:text-6xl font-semibold tracking-tight text-gray-950 leading-[1.05] mb-6">
+          Sabé exactamente cuánto
+          <br className="hidden sm:block" /> necesitás ahorrar para{" "}
+          <span className="text-emerald-600">jubilarte</span>
         </h1>
-        <p className="text-xl text-gray-500 mb-10 max-w-2xl mx-auto">
-          El sistema previsional argentino no fue diseñado para freelancers. RetiroLibre
-          calcula lo que el Estado no te va a dar y cuánto necesitás ahorrar vos mismo,
-          con inflación real y tres escenarios de inversión.
+        <p className="text-lg sm:text-xl text-gray-500 mb-10 max-w-xl mx-auto leading-relaxed">
+          El sistema previsional argentino no fue diseñado para freelancers.
+          Calculamos lo que el Estado no te va a dar y cuánto tenés que ahorrar
+          vos mismo —con inflación real y tres escenarios de inversión.
         </p>
-        <Link
-          href="/simulador"
-          className="inline-block bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-4 rounded-xl text-lg transition-colors"
-        >
-          Calculá tu plan gratis →
-        </Link>
-        <p className="text-sm text-gray-400 mt-4">Sin registro. Sin tarjeta. En 2 minutos.</p>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <Link
+            href="/simulador"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-7 py-3.5 rounded-full text-base transition-colors"
+          >
+            Calculá tu plan gratis
+            <span aria-hidden>→</span>
+          </Link>
+          <Link
+            href="#precios"
+            className="w-full sm:w-auto inline-flex items-center justify-center border border-gray-200 hover:border-gray-300 text-gray-700 font-medium px-7 py-3.5 rounded-full text-base transition-colors"
+          >
+            Ver precios
+          </Link>
+        </div>
+        <p className="text-sm text-gray-400 mt-5">Sin registro. Sin tarjeta. En 2 minutos.</p>
       </section>
 
-      {/* Problema */}
-      <section className="bg-gray-50 py-20">
-        <div className="max-w-4xl mx-auto px-6">
-          <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">
-            El problema que nadie te cuenta
+      {/* Problema — datos en mono como ancla visual */}
+      <section className="border-t border-gray-100 py-20 sm:py-24">
+        <div className="max-w-5xl mx-auto px-6">
+          <p className="text-sm font-medium text-emerald-600 mb-3">El problema</p>
+          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-gray-950 mb-12 max-w-lg">
+            Lo que nadie te cuenta sobre jubilarte siendo independiente
           </h2>
-          <div className="grid grid-cols-3 gap-8">
+          <div className="grid sm:grid-cols-3 gap-px bg-gray-100 border border-gray-100 rounded-2xl overflow-hidden">
             {[
               {
-                icon: "📉",
+                dato: "20%",
                 titulo: "La jubilación estatal no alcanza",
                 texto:
-                  "La mayoría de los monotributistas cobra el haber mínimo (hoy ~$403.000), gane lo que gane. Si facturás $2.000.000/mes, el Estado te cubre apenas el 20%.",
+                  "La mayoría de los monotributistas cobra el haber mínimo, gane lo que gane. Si facturás $2M/mes, el Estado te cubre apenas una quinta parte.",
               },
               {
-                icon: "💸",
-                titulo: "La inflación destruye tus ahorros",
+                dato: "$403K",
+                titulo: "El haber mínimo, gane lo que gane",
                 texto:
-                  "Ahorrar en pesos sin invertir correctamente equivale a perder poder adquisitivo cada año. Necesitás una estrategia, no solo guardar.",
+                  "Ahorrar en pesos sin invertir bien equivale a perder poder adquisitivo cada año. Necesitás una estrategia, no solo guardar plata.",
               },
               {
-                icon: "⏰",
+                dato: "2×",
                 titulo: "El tiempo es tu activo más valioso",
                 texto:
-                  "Empezar a los 25 requiere menos de la mitad del ahorro mensual que empezar a los 35. Cada año que pasa te cuesta caro.",
+                  "Empezar a los 35 requiere el doble de ahorro mensual que empezar a los 25. Cada año que pasa te cuesta caro.",
               },
             ].map((item) => (
-              <div key={item.titulo} className="text-center">
-                <div className="text-4xl mb-4">{item.icon}</div>
-                <h3 className="font-semibold text-gray-900 mb-2">{item.titulo}</h3>
-                <p className="text-sm text-gray-500">{item.texto}</p>
+              <div key={item.titulo} className="bg-white p-8">
+                <p className="font-mono text-4xl font-medium text-gray-950 tracking-tight mb-5">
+                  {item.dato}
+                </p>
+                <h3 className="font-medium text-gray-950 mb-2">{item.titulo}</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">{item.texto}</p>
               </div>
             ))}
           </div>
@@ -82,95 +108,113 @@ export default function Home() {
       </section>
 
       {/* Cómo funciona */}
-      <section className="py-20 max-w-4xl mx-auto px-6">
-        <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">
-          Cómo funciona
-        </h2>
-        <div className="space-y-8">
-          {[
-            {
-              paso: "1",
-              titulo: "Ingresás tus datos",
-              texto: "Edad, ingresos, ahorros actuales y situación laboral. Sin datos bancarios ni información sensible.",
-            },
-            {
-              paso: "2",
-              titulo: "El simulador calcula tu brecha",
-              texto: "Estimamos lo que el Estado argentino te pagará y calculamos cuánto necesitás cubrir vos mismo.",
-            },
-            {
-              paso: "3",
-              titulo: "Ves 3 escenarios de inversión",
-              texto: "Conservador, moderado y optimista, con tasas reales argentinas y proyección año a año hasta tu retiro.",
-            },
-          ].map((item) => (
-            <div key={item.paso} className="flex gap-6 items-start">
-              <div className="w-10 h-10 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center flex-shrink-0">
-                {item.paso}
+      <section className="border-t border-gray-100 py-20 sm:py-24">
+        <div className="max-w-3xl mx-auto px-6">
+          <p className="text-sm font-medium text-emerald-600 mb-3">Cómo funciona</p>
+          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-gray-950 mb-12">
+            De la incertidumbre a un plan concreto
+          </h2>
+          <div className="divide-y divide-gray-100 border-y border-gray-100">
+            {[
+              {
+                paso: "01",
+                titulo: "Ingresás tus datos",
+                texto:
+                  "Edad, ingresos, ahorros actuales y situación laboral. Sin datos bancarios ni información sensible.",
+              },
+              {
+                paso: "02",
+                titulo: "Calculamos tu brecha previsional",
+                texto:
+                  "Estimamos lo que el Estado argentino te va a pagar y cuánto necesitás cubrir vos mismo.",
+              },
+              {
+                paso: "03",
+                titulo: "Ves 3 escenarios de inversión",
+                texto:
+                  "Conservador, moderado y optimista, con tasas reales argentinas y proyección año a año hasta tu retiro.",
+              },
+            ].map((item) => (
+              <div key={item.paso} className="flex gap-6 sm:gap-10 py-6">
+                <span className="font-mono text-sm text-emerald-600 pt-1 tabular-nums">
+                  {item.paso}
+                </span>
+                <div>
+                  <h3 className="font-medium text-gray-950 mb-1">{item.titulo}</h3>
+                  <p className="text-gray-500 leading-relaxed">{item.texto}</p>
+                </div>
               </div>
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-1">{item.titulo}</h3>
-                <p className="text-gray-500">{item.texto}</p>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Precios */}
-      <section id="precios" className="bg-gray-50 py-20">
-        <div className="max-w-3xl mx-auto px-6">
-          <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">Precios</h2>
-          <div className="grid grid-cols-2 gap-6">
-            <div className="bg-white rounded-2xl border border-gray-200 p-8">
-              <h3 className="font-bold text-gray-900 text-xl mb-1">Gratis</h3>
-              <p className="text-gray-500 text-sm mb-6">Para empezar a entender tu situación</p>
-              <p className="text-3xl font-bold text-gray-900 mb-6">$0</p>
-              <ul className="space-y-3 text-sm text-gray-600 mb-8">
+      <section id="precios" className="border-t border-gray-100 py-20 sm:py-24 scroll-mt-16">
+        <div className="max-w-4xl mx-auto px-6">
+          <p className="text-sm font-medium text-emerald-600 mb-3 text-center">Precios</p>
+          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-gray-950 text-center mb-3">
+            Empezá gratis. Desbloqueá una sola vez.
+          </h2>
+          <p className="text-gray-500 text-center mb-12 max-w-md mx-auto">
+            Sin suscripciones ni renovaciones. Pagás una vez y tenés tu plan completo para siempre.
+          </p>
+
+          <div className="grid sm:grid-cols-2 gap-5 max-w-3xl mx-auto">
+            {/* Gratis */}
+            <div className="rounded-2xl border border-gray-200 p-8 flex flex-col">
+              <h3 className="font-medium text-gray-950 mb-1">Gratis</h3>
+              <p className="text-gray-500 text-sm mb-6">Para entender tu situación</p>
+              <p className="font-mono text-4xl font-medium text-gray-950 tracking-tight mb-8">$0</p>
+              <ul className="space-y-3 text-sm text-gray-600 mb-8 flex-1">
                 {[
-                  "Simulador básico",
+                  "Simulador completo",
                   "Resultado en escenario moderado",
                   "Estimación de jubilación estatal",
+                  "Cálculo de tu brecha previsional",
                 ].map((f) => (
-                  <li key={f} className="flex items-center gap-2">
-                    <span className="text-emerald-500">✓</span> {f}
+                  <li key={f} className="flex items-start gap-2.5">
+                    <Check className="text-gray-400" />
+                    {f}
                   </li>
                 ))}
               </ul>
               <Link
                 href="/simulador"
-                className="block text-center border border-emerald-600 text-emerald-600 hover:bg-emerald-50 font-semibold py-3 rounded-xl transition-colors"
+                className="block text-center border border-gray-200 hover:border-gray-300 text-gray-950 font-medium py-3 rounded-full transition-colors"
               >
                 Empezar gratis
               </Link>
             </div>
 
-            <div className="bg-emerald-600 rounded-2xl p-8 text-white relative overflow-hidden">
-              <div className="absolute top-4 right-4 bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-1 rounded-full">
+            {/* Pro — destacada en oscuro */}
+            <div className="relative rounded-2xl bg-gray-950 p-8 text-white flex flex-col">
+              <span className="absolute top-6 right-6 text-[11px] font-medium text-emerald-300 border border-emerald-400/30 px-2.5 py-1 rounded-full">
                 Pago único
-              </div>
-              <h3 className="font-bold text-xl mb-1">Pro</h3>
-              <p className="text-emerald-200 text-sm mb-6">Para tomar decisiones reales</p>
-              <p className="text-3xl font-bold mb-1">
-                $9.990<span className="text-lg font-normal text-emerald-200"> una vez</span>
+              </span>
+              <h3 className="font-medium mb-1">Pro</h3>
+              <p className="text-gray-400 text-sm mb-6">Para tomar decisiones reales</p>
+              <p className="font-mono text-4xl font-medium tracking-tight mb-1">
+                $9.990
               </p>
-              <p className="text-emerald-200 text-xs mb-6">Sin suscripción · acceso para siempre</p>
-              <ul className="space-y-3 text-sm text-emerald-100 mb-8">
+              <p className="text-gray-400 text-xs mb-8">Una sola vez · acceso para siempre</p>
+              <ul className="space-y-3 text-sm text-gray-300 mb-8 flex-1">
                 {[
                   "Todo lo del plan gratuito",
                   "3 escenarios de inversión",
                   "Proyección año a año",
                   "Plan de acción: en qué invertir",
-                  "Exportar plan a PDF",
+                  "Exportar tu plan a PDF",
                 ].map((f) => (
-                  <li key={f} className="flex items-center gap-2">
-                    <span className="text-yellow-300">✓</span> {f}
+                  <li key={f} className="flex items-start gap-2.5">
+                    <Check className="text-emerald-400" />
+                    {f}
                   </li>
                 ))}
               </ul>
               <Link
                 href="/simulador"
-                className="block text-center bg-white text-emerald-700 hover:bg-emerald-50 font-semibold py-3 rounded-xl transition-colors"
+                className="block text-center bg-emerald-500 hover:bg-emerald-400 text-gray-950 font-semibold py-3 rounded-full transition-colors"
               >
                 Desbloquear mi plan
               </Link>
@@ -179,32 +223,61 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Lista de espera */}
-      <section className="bg-emerald-600 py-20">
+      {/* CTA de cierre */}
+      <section className="border-t border-gray-100 py-20 sm:py-28">
         <div className="max-w-2xl mx-auto px-6 text-center">
-          <h2 className="text-3xl font-bold text-white mb-3">
-            Sé de los primeros en usarlo
+          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-gray-950 mb-5">
+            Tu yo de 65 años te lo va a agradecer
           </h2>
-          <p className="text-emerald-100 mb-8">
-            Estamos abriendo el acceso de a poco. Dejá tu email y te avisamos apenas
-            puedas desbloquear los escenarios completos y armar tu plan de retiro.
+          <p className="text-lg text-gray-500 mb-9 max-w-lg mx-auto leading-relaxed">
+            En 2 minutos sabés cuánto te falta y cómo cubrirlo. Es gratis y no
+            necesitás registrarte.
           </p>
-          <div className="max-w-md mx-auto">
-            <WaitlistForm variante="claro" origen="landing-cta" textoBoton="Anotarme" />
-          </div>
+          <Link
+            href="/simulador"
+            className="inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-8 py-4 rounded-full text-base transition-colors"
+          >
+            Calculá tu plan ahora
+            <span aria-hidden>→</span>
+          </Link>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-gray-100 py-10 text-center text-sm text-gray-400">
-        <p className="mb-1 font-medium text-gray-500">RetiroLibre</p>
-        <p className="mb-3">
-          <Link href="/jubilacion-monotributista" className="text-emerald-600 hover:text-emerald-700">
-            ¿Cuánto cobra de jubilación un monotributista en 2026?
+      <footer className="border-t border-gray-100 py-12">
+        <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 text-sm">
+          <div>
+            <p className="flex items-center gap-2 font-semibold tracking-tight text-gray-950 mb-1">
+              <span className="w-2 h-2 rounded-full bg-emerald-500" />
+              RetiroLibre
+            </p>
+            <p className="text-gray-400">
+              Los cálculos son estimativos y no constituyen asesoramiento financiero.
+            </p>
+          </div>
+          <Link
+            href="/jubilacion-monotributista"
+            className="text-gray-500 hover:text-gray-950 transition-colors"
+          >
+            ¿Cuánto cobra de jubilación un monotributista en 2026? →
           </Link>
-        </p>
-        <p>Los cálculos son estimativos y no constituyen asesoramiento financiero.</p>
+        </div>
       </footer>
     </main>
+  );
+}
+
+function Check({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      className={`w-4 h-4 mt-0.5 flex-shrink-0 ${className}`}
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.75}
+      aria-hidden
+    >
+      <path d="M3.5 8.5l3 3 6-7" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
   );
 }
