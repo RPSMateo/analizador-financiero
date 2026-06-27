@@ -101,6 +101,30 @@ export default function Simulador() {
     window.print();
   }
 
+  async function compartirResultado() {
+    if (!resultado) return;
+    const ahorro = formatearPesos(resultado.escenarios.moderado.ahorroMensualNecesario);
+    const url = "https://retirolibre.vercel.app/simulador";
+    const texto =
+      `Según RetiroLibre, para jubilarme sin depender solo del Estado necesito ahorrar ${ahorro}/mes 👀\n\n` +
+      `Calculá cuánto te falta a vos (gratis, sin registrarte):`;
+
+    // Share nativo del sistema (mobile) — incluye WhatsApp, Instagram, etc.
+    if (typeof navigator !== "undefined" && navigator.share) {
+      try {
+        await navigator.share({ title: "Mi plan de retiro — RetiroLibre", text: texto, url });
+        track("compartir", { metodo: "nativo" });
+      } catch {
+        /* el usuario canceló el diálogo, no hacemos nada */
+      }
+      return;
+    }
+
+    // Fallback desktop: abrir WhatsApp web con el mensaje precargado
+    window.open(`https://wa.me/?text=${encodeURIComponent(`${texto} ${url}`)}`, "_blank");
+    track("compartir", { metodo: "whatsapp" });
+  }
+
   async function iniciarPago() {
     // Embudo: 2) hizo click en desbloquear (intención de pago)
     track("iniciar_pago");
@@ -300,6 +324,25 @@ export default function Simulador() {
                   objetivo: 70% de tu ingreso ({formatearPesos(resultado.ingresoObjetivoRetiro)})
                 </p>
               </div>
+            </div>
+
+            {/* Compartir resultado — bucle de difusión */}
+            <div className="mt-6 pt-5 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <p className="text-sm text-gray-500">
+                ¿Conocés a alguien que debería ver esto?
+              </p>
+              <button
+                onClick={compartirResultado}
+                className="inline-flex items-center justify-center gap-2 border border-gray-200 hover:border-gray-300 text-gray-950 font-medium text-sm px-4 py-2.5 rounded-full transition-colors"
+              >
+                <svg className="w-4 h-4 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} aria-hidden>
+                  <circle cx="18" cy="5" r="3" />
+                  <circle cx="6" cy="12" r="3" />
+                  <circle cx="18" cy="19" r="3" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4" />
+                </svg>
+                Compartir mi resultado
+              </button>
             </div>
           </div>
 
