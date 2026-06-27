@@ -31,10 +31,17 @@ const INPUT_CLASS =
   "w-full border border-gray-200 rounded-xl px-4 py-3 text-gray-950 font-mono tabular-nums " +
   "focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors";
 
+/** Agrega un punto cada 3 dígitos (separador de miles argentino): "800000" → "800.000". */
+function formatearMiles(valor: string): string {
+  const soloDigitos = valor.replace(/\D/g, "");
+  if (soloDigitos === "") return "";
+  return soloDigitos.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
 export default function Simulador() {
   const [inputs, setInputs] = useState<SimulatorInputs>(INPUTS_INICIALES);
-  const [rawIngreso, setRawIngreso] = useState(String(INPUTS_INICIALES.ingresoMensual));
-  const [rawAhorro, setRawAhorro] = useState(String(INPUTS_INICIALES.ahorroActual));
+  const [rawIngreso, setRawIngreso] = useState(formatearMiles(String(INPUTS_INICIALES.ingresoMensual)));
+  const [rawAhorro, setRawAhorro] = useState(formatearMiles(String(INPUTS_INICIALES.ahorroActual)));
   const [inputError, setInputError] = useState<string | null>(null);
   const [resultado, setResultado] = useState<ResultadoSimulacion | null>(null);
   const [escenarioActivo, setEscenarioActivo] = useState<"conservador" | "moderado" | "optimista">("moderado");
@@ -163,20 +170,19 @@ export default function Simulador() {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">Ingreso mensual neto (ARS)</label>
             <input
-              type="number"
-              min={0}
-              step={10000}
+              type="text"
+              inputMode="numeric"
               value={rawIngreso}
               onChange={(e) => {
-                setRawIngreso(e.target.value);
-                const num = e.target.value === "" ? 0 : Number(e.target.value);
-                if (!isNaN(num)) setInputs((prev) => ({ ...prev, ingresoMensual: num }));
+                const soloDigitos = e.target.value.replace(/\D/g, "");
+                setRawIngreso(formatearMiles(soloDigitos));
+                setInputs((prev) => ({ ...prev, ingresoMensual: soloDigitos === "" ? 0 : Number(soloDigitos) }));
               }}
               onBlur={() => {
                 if (rawIngreso === "") setRawIngreso("0");
               }}
               className={INPUT_CLASS + (inputError ? " border-red-400 focus:border-red-400 focus:ring-red-400" : "")}
-              placeholder="Ej: 800000"
+              placeholder="Ej: 800.000"
             />
             {inputError && <p className="text-xs text-red-500 mt-1.5">{inputError}</p>}
             {!inputError && <p className="text-xs text-gray-400 mt-1.5">Lo que ingresás en promedio por mes, a valores de hoy</p>}
@@ -185,14 +191,13 @@ export default function Simulador() {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">Ahorros / inversiones actuales (ARS)</label>
             <input
-              type="number"
-              min={0}
-              step={10000}
+              type="text"
+              inputMode="numeric"
               value={rawAhorro}
               onChange={(e) => {
-                setRawAhorro(e.target.value);
-                const num = e.target.value === "" ? 0 : Number(e.target.value);
-                if (!isNaN(num)) setInputs((prev) => ({ ...prev, ahorroActual: num }));
+                const soloDigitos = e.target.value.replace(/\D/g, "");
+                setRawAhorro(formatearMiles(soloDigitos));
+                setInputs((prev) => ({ ...prev, ahorroActual: soloDigitos === "" ? 0 : Number(soloDigitos) }));
               }}
               onBlur={() => {
                 if (rawAhorro === "") setRawAhorro("0");
