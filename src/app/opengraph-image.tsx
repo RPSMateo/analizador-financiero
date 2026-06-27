@@ -42,7 +42,7 @@ export default function Image() {
               RetiroLibre
             </div>
           </div>
-          <div style={{ fontSize: 24, color: "#9ca3af" }}>retirolibre.vercel.app</div>
+          <div style={{ fontSize: 24, color: "#9ca3af" }}>retirolibre.com.ar</div>
         </div>
 
         {/* Middle: badge + título */}

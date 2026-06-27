@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
   const origin =
     request.headers.get("origin") ??
     process.env.NEXT_PUBLIC_APP_URL ??
-    "https://retirolibre.vercel.app";
+    "https://retirolibre.com.ar";
 
   const preference = {
     items: [

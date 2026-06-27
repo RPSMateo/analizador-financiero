@@ -10,7 +10,7 @@ import type { Metadata } from "next";
  * cifras en monoespaciada).
  */
 
-const BASE = "https://retirolibre.vercel.app";
+const BASE = "https://retirolibre.com.ar";
 
 interface ArticleMeta {
   titulo: string;

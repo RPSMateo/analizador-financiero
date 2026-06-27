@@ -104,7 +104,7 @@ export default function Simulador() {
   async function compartirResultado() {
     if (!resultado) return;
     const ahorro = formatearPesos(resultado.escenarios.moderado.ahorroMensualNecesario);
-    const url = "https://retirolibre.vercel.app/simulador";
+    const url = "https://retirolibre.com.ar/simulador";
     const texto =
       `Según RetiroLibre, para jubilarme sin depender solo del Estado necesito ahorrar ${ahorro}/mes 👀\n\n` +
       `Calculá cuánto te falta a vos (gratis, sin registrarte):`;

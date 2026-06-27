@@ -78,7 +78,7 @@ export default function PlanReport({ resultado }: { resultado: ResultadoSimulaci
         </div>
         <div className="text-right text-xs text-gray-500">
           <p>Generado el {fechaHoy()}</p>
-          <p>retirolibre.vercel.app</p>
+          <p>retirolibre.com.ar</p>
         </div>
       </header>
 
@@ -266,7 +266,7 @@ export default function PlanReport({ resultado }: { resultado: ResultadoSimulaci
         </p>
         <p>
           Este informe es una estimación generada automáticamente y no constituye asesoramiento
-          financiero ni previsional. RetiroLibre · retirolibre.vercel.app
+          financiero ni previsional. RetiroLibre · retirolibre.com.ar
         </p>
       </footer>
     </div>,

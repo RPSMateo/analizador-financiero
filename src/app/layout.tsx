@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://retirolibre.vercel.app"),
+  metadataBase: new URL("https://retirolibre.com.ar"),
   title: "RetiroLibre — Simulador de jubilación para freelancers argentinos",
   description:
     "Calculá cuánto necesitás ahorrar para jubilarte como autónomo o freelancer en Argentina. Con inflación real y 3 escenarios de inversión.",
