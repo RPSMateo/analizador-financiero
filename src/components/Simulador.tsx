@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { track } from "@vercel/analytics/react";
 import {
   calcularSimulacion,
   edadJubilacionLegal,
@@ -62,6 +63,8 @@ export default function Simulador() {
       localStorage.setItem(LS_KEY, "true");
       setProDesbloqueado(true);
       setPagoMensaje("ok");
+      // Embudo: 3) pago confirmado (conversión completada)
+      track("pago_confirmado");
       // Limpiar la URL sin recargar la página
       window.history.replaceState(null, "", window.location.pathname);
     } else if (pago === "error") {
@@ -84,7 +87,14 @@ export default function Simulador() {
       return;
     }
     setInputError(null);
-    setResultado(calcularSimulacion(inputs));
+    const res = calcularSimulacion(inputs);
+    setResultado(res);
+    // Embudo: 1) calculó su plan
+    track("calcular_plan", {
+      situacion: inputs.situacion,
+      edad: inputs.edadActual,
+      tieneBrecha: res.brechaMensual > 0,
+    });
   }
 
   function descargarPDF() {
@@ -92,6 +102,8 @@ export default function Simulador() {
   }
 
   async function iniciarPago() {
+    // Embudo: 2) hizo click en desbloquear (intención de pago)
+    track("iniciar_pago");
     setPagoCargando(true);
     try {
       const res = await fetch("/api/pago/crear", { method: "POST" });
