@@ -218,6 +218,9 @@ export default function Home() {
               >
                 Desbloquear mi plan
               </Link>
+              <p className="text-[11px] text-gray-500 text-center mt-3">
+                Sin suscripción · pago seguro con Mercado Pago
+              </p>
             </div>
           </div>
         </div>

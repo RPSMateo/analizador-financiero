@@ -418,17 +418,19 @@ export default function Simulador() {
                   <Lock />
                 </div>
                 <h3 className="text-xl font-semibold tracking-tight text-gray-950 mb-2">
-                  Desbloqueá tu plan completo
+                  Tu brecha es de{" "}
+                  <span className="font-mono text-emerald-600">{formatearPesos(resultado.brechaMensual)}</span>/mes
                 </h3>
                 <p className="text-sm text-gray-500 mb-6 max-w-sm mx-auto">
-                  Una sola vez, sin suscripción. Accedés a todo para siempre.
+                  Ya sabés <strong className="text-gray-700 font-medium">cuánto</strong> te falta. El plan completo te
+                  muestra <strong className="text-gray-700 font-medium">cómo cubrirlo</strong>, paso a paso.
                 </p>
 
-                <ul className="text-left text-sm text-gray-600 space-y-2.5 mb-7 max-w-xs mx-auto">
+                <ul className="text-left text-sm text-gray-600 space-y-2.5 mb-6 max-w-xs mx-auto">
                   {[
-                    "3 escenarios con proyección año a año",
+                    "Cuánto ahorrar por mes en 3 escenarios reales",
                     "Comparación visual conservador vs. optimista",
-                    "Plan de acción: en qué instrumento invertir",
+                    "Plan de acción: en qué instrumento poner cada peso",
                     "Informe PDF completo para guardar e imprimir",
                   ].map((item) => (
                     <li key={item} className="flex items-start gap-2.5">
@@ -444,12 +446,20 @@ export default function Simulador() {
                   className="w-full max-w-xs bg-emerald-600 hover:bg-emerald-700 disabled:opacity-60 text-white font-semibold py-4 rounded-full transition-colors"
                 >
                   {pagoCargando ? "Redirigiendo..." : (
-                    <>Desbloquear — <span className="font-mono">$9.990</span></>
+                    <>Desbloquear mi plan — <span className="font-mono">$9.990</span></>
                   )}
                 </button>
                 <p className="text-xs text-gray-400 mt-3">
-                  Pago seguro con Mercado Pago · tarjetas, débito o saldo MP
+                  Pago único, sin suscripción · una sola vez por menos de lo que esa brecha
+                  te cuesta en un solo día.
                 </p>
+
+                {/* Fila de confianza */}
+                <div className="mt-6 pt-6 border-t border-gray-100 grid grid-cols-3 gap-2 max-w-sm mx-auto">
+                  <TrustBadge titulo="Acceso para siempre" sub="Pago único" />
+                  <TrustBadge titulo="Datos privados" sub="No guardamos nada" />
+                  <TrustBadge titulo="Pago seguro" sub="Mercado Pago" />
+                </div>
               </div>
             </div>
           )}
@@ -485,6 +495,19 @@ function Check() {
     <svg className="w-4 h-4 mt-0.5 flex-shrink-0 text-emerald-500" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={1.75} aria-hidden>
       <path d="M3.5 8.5l3 3 6-7" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
+  );
+}
+
+function TrustBadge({ titulo, sub }: { titulo: string; sub: string }) {
+  return (
+    <div className="flex flex-col items-center text-center">
+      <svg className="w-5 h-5 text-gray-400 mb-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} aria-hidden>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4" />
+      </svg>
+      <p className="text-xs font-medium text-gray-700 leading-tight">{titulo}</p>
+      <p className="text-[11px] text-gray-400 leading-tight">{sub}</p>
+    </div>
   );
 }
 
