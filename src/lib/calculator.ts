@@ -236,7 +236,7 @@ export function calcularSimulacion(inputs: SimulatorInputs): ResultadoSimulacion
   const aniosEnRetiro = Math.max(0, expVida - inputs.edadRetiro);
 
   const jubilacionEstatalMensual = jubilacionEstatal(inputs);
-  const tasaReemplazoEstatal = jubilacionEstatalMensual / inputs.ingresoMensual;
+  const tasaReemplazoEstatal = inputs.ingresoMensual > 0 ? jubilacionEstatalMensual / inputs.ingresoMensual : 0;
 
   const ingresoObjetivoRetiro = inputs.ingresoMensual * TASA_REEMPLAZO_OBJETIVO;
   const brechaMensual = Math.max(0, ingresoObjetivoRetiro - jubilacionEstatalMensual);
